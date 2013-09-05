@@ -1,8 +1,13 @@
-# Transhumance
-
 ![Transhumance image by Journal du Trek](http://www.journaldutrek.com/upload/tr/transhumance-avec-jean-pierre-berger-806/transhumance-avec-jean-pierre-berger-806.jpg)
 
-[Transhumance](http://en.wikipedia.org/wiki/Transhumance) is a ruby gem to make big fat migration on large datasets
+# Transhumance
+
+> While `ALTER TABLE` is executing, the original table is readable by other sessions. Updates and writes to the table are stalled until the new table is ready, and then are automatically redirected to the new table without any failed updates. - [dev.mysql.com](http://dev.mysql.com/doc/refman/5.1/en/alter-table.html)
+
+If your database holds million of records and you can't afford the downtime caused by the write lock when you need to alter its schema, [*Transhumance*](http://en.wikipedia.org/wiki/Transhumance) is for you.
+
+*Transhumance* provides a minimal DSL on top of `ActiveRecord::Migration`
+
 
 ## Install & usage
 
@@ -22,16 +27,15 @@ require 'transhumance'
 
 class MyMigration < ActiveRecord::Migration
   def up
-    t = Transhumance.new(
+    Transhumance.new(
       context: self,
-      source: 'users',
-      target: 'users_wo_column',
+      source: 'table',
+      target: 'table_tmp',
       chunk_size: 200,
-      logger: Logger.new(File.join('tmp', 'transhumance_users_wo_column'))
+      logger: Logger.new(File.join('tmp', 'transhumance_table'))
       debug: true,
     ).with_schema_changes do |target|
-  	  remove_column target, :column
-  	  rename_column target, :
+	    remove_column target, :column_a
     end.run
   end
 
@@ -45,17 +49,20 @@ Then you can run `rake db:migrate`
 
 ## How it works
 
-One of the safest way to migrate data on a DB with lots of contention and lots of data, is to copy your data to a newly created and temporary table on which you applied all the schema changes you want in the end.
+One way to change the structure of a database having millions of records, while it keep receiving reads and writes, is to copy the data to a temporary table.
 
-Transhumance takes care of creating that temporary table, apply any schema changes you want, copy your data over in chunks. When it's done, it will copy the records which have been updated while you were copying things over the first time.
+If you don't want to cause more contention, you'll need to proceed in chunks. Finding the chunk size which match best your setup will require you to practice your migration on a test database. Who doesn't test anyway?
 
-It will continue mirroring your data to the temporary table until the number of items to mirror is low enough.
-Then it will lock both table, mirror any updated data and swap the tables.
+*Transhumance* takes care of creating that temporary table, applying any schema changes you want, and copying your data in configurable chunks to the new table.
+
+While your data is being copied, your application will still being able to access the table, creating and updating records.
+
+To ensure the atomicity of your data, *Transhumance* will keep mirroring chunks of data until it becomes acceptable to lock the tables, copy one last time and swap them.
 
 
 ### Available table transformations
 
-Basically every table transformations available in `ActiveRecord::Migration` is supported by Transhumance.
+Basically every table transformations available in *ActiveRecord::Migration* is supported by *Transhumance*.
 
 - `add_column(table_name, column_name, type, options)`: Adds a new column to the table
 - `rename_column(table_name, column_name, new_column_name)`: Renames a column but keeps the type and content.

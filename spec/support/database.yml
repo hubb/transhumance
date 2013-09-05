@@ -1,0 +1,11 @@
+development:
+  adapter:  mysql2
+  encoding: utf8
+  username: root
+  database: transhumance
+
+test:
+  adapter:  mysql2
+  encoding: utf8
+  username: root
+  database: transhumance_test

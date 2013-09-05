@@ -1,7 +1,9 @@
 # encoding: UTF-8
 
+require './lib/version'
+
 Gem::Specification.new do |s|
-	s.name   			= 'Transhumance'
+	s.name   			= 'transhumance'
 	s.version			= Transhumance::VERSION
 	s.date   			= '2013-09-05'
 
@@ -12,6 +14,14 @@ Gem::Specification.new do |s|
 	s.email				= ['tgautriaud@housetrip.com', 'jletessier@housetrip.com']
 	s.homepage    = 'https://github.com/hubb/transhumance'
 
-	s.files       = Dir.glob('lib/**/*.rb')
-	s.test_files  = Dir.glob('spec/**/*_spec.rb')
+	s.files       = Dir.glob('lib/**/*')
+	s.test_files  = s.files.grep(%r{^spec})
+
+	s.add_runtime_dependency 'activerecord'
+
+	s.add_development_dependency 'bundler'
+	s.add_development_dependency 'rake'
+	s.add_development_dependency 'rspec'
+	s.add_development_dependency 'pry'
+	s.add_development_dependency 'pry-nav'
 end

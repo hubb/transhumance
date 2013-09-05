@@ -10,7 +10,7 @@ require 'logger'
 require 'active_record'
 
 # Gem
-require File.join('lib', 'transhumance')
+require File.join('./lib', 'transhumance')
 
 # Seed the db
 Rake.application.init

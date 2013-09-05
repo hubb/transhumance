@@ -2,7 +2,7 @@
 
 ![Transhumance image by Journal du Trek](http://www.journaldutrek.com/upload/tr/transhumance-avec-jean-pierre-berger-806/transhumance-avec-jean-pierre-berger-806.jpg)
 
-[Transhumance](http://en.wikipedia.org/wiki/Transhumance) is a ruby gem to make big fat migration on large datasets 
+[Transhumance](http://en.wikipedia.org/wiki/Transhumance) is a ruby gem to make big fat migration on large datasets
 
 ## Install & usage
 
@@ -12,7 +12,10 @@ Either `gem install transhumance` or add to your `Gemfile`
 gem 'transhumance'
 ```
 
-Then in an `ActiveRecord::Migration`
+and `bundle install`
+
+
+Generate a new migration with `rails generate migration MyMigration`
 
 ```
 require 'transhumance'
@@ -20,10 +23,10 @@ require 'transhumance'
 class MyMigration < ActiveRecord::Migration
   def up
     t = Transhumance.new(
-      context: self, 
-      source: 'users', 
-      target: 'users_wo_column', 
-      chunk_size: 200, 
+      context: self,
+      source: 'users',
+      target: 'users_wo_column',
+      chunk_size: 200,
       logger: Logger.new(File.join('tmp', 'transhumance_users_wo_column'))
       debug: true,
     ).with_schema_changes do |target|
@@ -31,7 +34,7 @@ class MyMigration < ActiveRecord::Migration
   	  rename_column target, :
     end.run
   end
-  
+
   def down
     raise ActiveRecord::IrreversibleMigration
   end

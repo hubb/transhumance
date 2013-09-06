@@ -1,24 +1,9 @@
 # encoding: UTF-8
 
-# Safely copies all data from a source table to a target table,
-# with low contention, and atomic swapping of tables.
-#
 # Assumptions:
 # - there is an :id and :updated_at column
 # - new records have incrementing IDs
 # - THERE IS AN INDEX ON updated_at (STOP HERE IF YOU DON'T)
-#
-# Tested with adding/removing columns/indices.
-# Probably doesnt work the way you'd like for column renames.
-#
-# Usage:
-#   Transhumance.
-#    new(:context => self, :source => 'messages', { :target => 'messages_wo_bodies', :debug => true }).
-#    with_schema_changes do |target|
-#      remove_column target, :body_for_sender
-#      remove_column target, :body_for_recipient
-#    end.
-#    run
 #
 require 'logger'
 

@@ -19,9 +19,12 @@ Gem::Specification.new do |s|
 
 	s.add_runtime_dependency 'activerecord'
 
-	s.add_development_dependency 'bundler'
-	s.add_development_dependency 'rake'
-	s.add_development_dependency 'rspec'
-	s.add_development_dependency 'pry'
-	s.add_development_dependency 'pry-nav'
+  s.add_development_dependency 'bundler', '~> 1.3'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'pry'
+  s.add_development_dependency 'pry-nav'
+  s.add_development_dependency 'guard'
+  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'guard-bundler'
 end

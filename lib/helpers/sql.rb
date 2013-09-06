@@ -24,7 +24,7 @@ class Transhumance
         context.select_value(%Q(
           SELECT MAX(id) FROM #{table}
         )).to_i.tap do |id|
-          logger.debug("~ Max ID of #{table}: #{id}")
+          logger.debug("-> Max ID of #{table}: #{id}")
         end
       end
 
@@ -43,7 +43,7 @@ class Transhumance
           current,
           chunk_size
         ])).tap do |next_offset|
-          logger.debug("~ Next offset is: #{next_offset}")
+          logger.debug("-> Next offset is: #{next_offset}")
         end
       end
 

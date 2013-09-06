@@ -23,13 +23,17 @@ describe Transhumance do
 
   context '(integration)' do
 
+    class Sheep < ActiveRecord::Base
+      attr_accessible :age, :weight, :sheepfold
+    end
+
     # This would be your classical Rails migration,
     # unless it's using the MigrationService
     class TranshumanceTest < ActiveRecord::Migration
       def self.up
         Transhumance.new(:context    => self,
                          :source     => "sheeps",
-                         :chunk_size => 5).
+                         :chunk_size => 10).
           with_schema_changes do |target_table|
             remove_column target_table, :notes
           end.run
@@ -44,12 +48,15 @@ describe Transhumance do
     let(:db) { subject.connection }
 
     it 'has copied all data from source to destination and applied schema changes' do
-      org_count = 0
-
       org_count = db.select_value("SELECT COUNT(id) FROM sheeps")
-      subject.up
 
-      db.select_value("SELECT COUNT(id) FROM sheeps_new").should == org_count
+      expect { subject.up }.to change {
+        begin
+          db.select_value("SELECT COUNT(id) FROM sheeps_new")
+        rescue
+          0
+        end
+      }.from(0).to(org_count)
     end
 
   end

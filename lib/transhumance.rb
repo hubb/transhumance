@@ -20,8 +20,6 @@
 #    end.
 #    run
 #
-$:.unshift(File.expand_path('lib'))
-
 require 'logger'
 
 require 'helpers/sql'
@@ -54,6 +52,7 @@ class Transhumance
 
   def run
     # Start
+    puts "\n"
     logger.info("Transhumance started at #{Time.current.to_s(:db)}")
 
     # Setup destination table with schema changes
